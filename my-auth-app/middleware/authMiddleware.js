@@ -19,7 +19,7 @@ const protect  = (req, res, next) => {
 			({ message: 'Invalid or expired token' });
 	}
 
-	req.userId = decoded.id; 
+	req.user = decoded; 
 	next();
 };
 

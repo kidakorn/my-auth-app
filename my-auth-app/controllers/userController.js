@@ -1,9 +1,9 @@
-import { findUserById } from '../models/userModel.js';
+import { findUserById , findAllUsers} from '../models/userModel.js';
 
 const getUserProfile = async (req, res) => {
     try {
         // req.userId ได้มาจาก authMiddleware.js
-        const user = await findUserById(req.userId);
+        const user = await findUserById(req.user.id);
 
         if (user) {
             // ส่งข้อมูลผู้ใช้กลับไปตามที่คุณต้องการ
@@ -11,6 +11,7 @@ const getUserProfile = async (req, res) => {
                 id: user.id,
                 username: user.username,
                 email: user.email,
+                role: user.role,
                 // ไม่ส่ง password กลับไป
             });
         } else {
@@ -22,4 +23,13 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-export { getUserProfile }; // ใช้ Named Export
+const getAlluser = async (req, res) => {
+    try {
+        const users = await findAllUsers();
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ massage: 'Server error fetching users', error: error.message });
+    }
+};
+
+export { getUserProfile, getAlluser }; // ใช้ Named Export

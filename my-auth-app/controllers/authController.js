@@ -1,4 +1,4 @@
-import { createUser, findUserByEmail } from '../models/userModel.js';
+import { createUser, findUserByUsername } from '../models/userModel.js';
 import { hashPassword, comparePassword } from '../utils/passwordHash.js';
 import { createToken } from '../services/jwtService.js';
 
@@ -14,22 +14,26 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-	const { email, password } = req.body;
+	const { username, password } = req.body;
 	try {
-		const user = await findUserByEmail(email);
+		const user = await findUserByUsername(username);
 		if (!user) {
 			return res.status(401).json({ message: 'Invalid credentials' });
 		}
 
 		const isMatch = await comparePassword(password, user.password);
 		if (!isMatch) {
-			return res.status(401).json({ message : 'Invalid credentials' });
+			return res.status(401).json({ message: 'Invalid credentials' });
 		}
 
-		const token = createToken({ id: user.id, username: user.username });
+		const token = createToken({ 
+			id: user.id, 
+			username: user.username, 
+			role:user.role 
+		});
 		res.json({ message: 'Login successful', token });
 	} catch (error) {
-		res.status(500).json({ message: 'Error logging in', error: error.message  });
+		res.status(500).json({ message: 'Error logging in', error: error.message });
 	}
 };
 
