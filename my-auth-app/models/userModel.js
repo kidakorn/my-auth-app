@@ -1,17 +1,12 @@
 import pool from '../config/database.js';
 
-const createUser = async (username, email, password) => {
+const createUser = async (username, email, password, role = 'user') => {
 	const [result] = await pool.query(
-		'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-		[username, email, password]
+		'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
+		[username, email, password, role]
 	);
-	return { id: result.insertId, username, email };
+	return { id: result.insertId, username, email, role };
 };
-
-// const findUserByEmail = async (email) => {
-// 	const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-// 	return rows[0];
-// };
 
 const findUserByUsername = async (username) => {
 	const [rows] = 	await pool.query('SELECT * FROM users WHERE username = ?', [username]);
@@ -28,4 +23,14 @@ const findAllUsers = async () => {
 	return rows;
 };
 
-export {createUser, findUserByUsername, findUserById, findAllUsers};
+const updateUserRoleById = async (id, role) => {
+	const [result] = await pool.query('UPDATE users SET role = ? WHERE id = ?', [role, id]);
+	return result.affectedRows; // คืนค่า 1 ถ้าสำเร็จ
+}; 
+
+const deleteUserById = async (id) => {
+	const [result] = await pool.query('DELETE FROM users WHERE id = ?', [id]);
+	return result.affectedRows;
+};
+
+export {createUser, findUserByUsername, findUserById, findAllUsers, updateUserRoleById, deleteUserById};
