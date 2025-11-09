@@ -33,4 +33,9 @@ const deleteUserById = async (id) => {
 	return result.affectedRows;
 };
 
-export {createUser, findUserByUsername, findUserById, findAllUsers, updateUserRoleById, deleteUserById};
+const updateUserProfileById = async (id, username, email) => {
+	const [result] = await pool.query('UPDATE users SET username = ?, email = ? WHERE id = ?', [username, email, id]);
+	return result.affectedRows;
+};
+
+export {createUser, findUserByUsername, findUserById, findAllUsers, updateUserRoleById, deleteUserById, updateUserProfileById};

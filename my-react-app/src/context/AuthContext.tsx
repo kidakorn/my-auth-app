@@ -16,6 +16,7 @@ interface AuthContextType {
 	login: (username: string, password: string) => Promise<void>;
 	register: (username: string, email: string, password: string) => Promise<void>;
 	logout: () => void;
+	updateProfile: (username: string, email: string) => Promise<void>;
 }
 
 // 3. สร้าง Context
@@ -68,8 +69,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		setUser(null);
 	};
 
+	const updateProfile = async (username: string, email: string) => {
+		try {
+			// 2.1 ยิง API ไปยัง Endpoint ที่เราเพิ่งสร้าง
+			const res = await api.patch('/users/profile', { username, email });
+			// 2.2 อัปเดต User state ทันทีด้วยข้อมูลใหม่ที่ Backend ส่งกลับมา
+			setUser(res.data.user);
+		} catch (error) {
+			console.error("Failed to update profile", error);
+			// โยน Error ต่อเพื่อให้ Component ที่เรียกใช้รู้ว่ามันล้มเหลว
+			throw error;
+		}
+	};
+
 	return(
-		<AuthContext.Provider value = {{ user, token, login, register, logout}}>
+		<AuthContext.Provider value = {{ user, token, login, register, logout, updateProfile}}>
 			{children}
 		</AuthContext.Provider>
 	);

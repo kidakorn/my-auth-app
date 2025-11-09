@@ -1,4 +1,4 @@
-import { findUserById, findAllUsers, updateUserRoleById, deleteUserById, createUser } from '../models/userModel.js';
+import { findUserById, findAllUsers, updateUserRoleById, deleteUserById, createUser, updateUserProfileById } from '../models/userModel.js';
 import { hashPassword } from '../utils/passwordHash.js';
 
 const getUserProfile = async (req, res) => {
@@ -94,4 +94,33 @@ const createUserByAdmin = async (req, res) => {
     }
 };
 
-export { getUserProfile, getAllUsers, updateUserRole, deleteUser, createUserByAdmin }; // ใช้ Named Export
+const updateUserProfile = async (req, res) => {
+    const userId = req.user.id;
+    const { username, email } = req.body;
+
+    if (!username || !email) {
+        return res.status(400).json({ message: 'Username and email are required.' });
+    }
+
+    try {
+        const affectedRows = await updateUserProfileById(userId, username, email);
+
+        if (affectedRows === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const updatedUser = {
+            id: userId,
+            username: username,
+            email: email,
+            role: req.user.role
+        };
+        res.json({ message: 'Profile updeted successfully', user: updatedUser });
+    } catch (error) {
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ message: 'Username or email already in use.' });
+        }
+        res.status(500).json({ message: 'Server error updating profile', error: error.message });
+    }
+};
+
+export { getUserProfile, getAllUsers, updateUserRole, deleteUser, createUserByAdmin, updateUserProfile }; // ใช้ Named Export
