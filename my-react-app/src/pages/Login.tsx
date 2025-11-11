@@ -43,7 +43,7 @@ const Login = () => {
           required
           className="p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
-        
+
         <button
           type="submit"
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-300"
@@ -51,7 +51,16 @@ const Login = () => {
           Login
         </button>
 
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <div className="text-center text-sm">
+          <Link
+            to="/forgot-password"
+            className="font-medium text-blue-600 hover:text-blue-700"
+          >
+            Forgot password?
+          </Link>
+        </div>
+
+        <p className="mt-4 text-center text-sm text-gray-600">
           Don't have an account?{" "}
           <Link
             to="/register"
