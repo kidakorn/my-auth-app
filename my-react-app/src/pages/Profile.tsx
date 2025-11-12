@@ -117,19 +117,19 @@ const Profile = () => {
             <CardContent className="space-y-6">
               <div className="text-lg space-y-4">
                 <div className="flex flex-col md:flex-row md:items-baseline">
-                  <span className="font-semibold text-muted-foreground w-full md:w-32 flex-shrink-0">
+                  <span className="font-semibold text-muted-foreground w-full md:w-32 shrink-0">
                     Username:
                   </span>
-                  <span className="font-medium break-words">{user.username}</span>
+                  <span className="font-medium wrap-break-word">{user.username}</span>
                 </div>
                 <div className="flex flex-col md:flex-row md:items-baseline">
-                  <span className="font-semibold text-muted-foreground w-full md:w-32 flex-shrink-0">
+                  <span className="font-semibold text-muted-foreground w-full md:w-32 shrink-0">
                     Email:
                   </span>
-                  <span className="font-medium break-words">{user.email}</span>
+                  <span className="font-medium wrap-break-word">{user.email}</span>
                 </div>
                 <div className="flex flex-col md:flex-row md:items-baseline">
-                  <span className="font-semibold text-muted-foreground w-full md:w-32 flex-shrink-0">
+                  <span className="font-semibold text-muted-foreground w-full md:w-32 shrink-0">
                     Role:
                   </span>
                   <span className="font-medium capitalize">{user.role}</span>
@@ -141,7 +141,7 @@ const Profile = () => {
                 Edit Profile
               </Button>
               {user.role === "admin" && (
-                <Button asChild variant="secondary" className="w-full sm:w-auto">
+                <Button asChild variant="outline" className="w-full bg-indigo-500 text-white hover:bg-indigo-600 hover:text-white sm:w-auto">
                   <Link to="/dashboard">Go to Admin Dashboard</Link>
                 </Button>
               )}

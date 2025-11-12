@@ -5,6 +5,7 @@ import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import { errorHandler } from './middleware/errorMiddleware.js';
 
 // const { json } = bodyParser; 
 const app = express();
@@ -18,6 +19,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes); 
 app.use('/api/admin', adminRoutes);
+// (Middleware นี้ต้องอยู่ "หลัง" Routes ทั้งหมดเสมอ)
+app.use(errorHandler);
 
 app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
