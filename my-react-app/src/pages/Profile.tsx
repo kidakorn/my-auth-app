@@ -2,6 +2,11 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState, type FormEvent } from "react";
 
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
+
 const Profile = () => {
   const { user, logout, updateProfile } = useAuth();
 
@@ -56,134 +61,97 @@ const Profile = () => {
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto mt-8 sm:mt-16 p-6 sm:p-8 bg-white shadow-2xl rounded-2xl border border-gray-200">
-      {/* --- โหมดแก้ไข (Edit Mode) --- */}
-      {isEditing ? (
-        <form onSubmit={handleSave}>
-          <h1 className="text-3xl sm:text-4xl font-extrabold mb-8 text-blue-700 border-b pb-4">
-            Edit Profile
-          </h1>
-
-          {error && (
-            <div className="my-4 p-3 bg-red-100 text-red-700 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          <div className="space-y-6 mt-8">
-            <div className="flex flex-col text-lg">
-              <label
-                htmlFor="username"
-                className="font-semibold text-gray-600 mb-1"
-              >
-                Username:
-              </label>
-              <input
-                id="username"
-                type="text"
-                value={formData.username}
-                onChange={(e) =>
-                  setFormData({ ...formData, username: e.target.value })
-                }
-                className="p-3 border border-gray-300 rounded-lg"
-                required
-              />
-            </div>
-
-            <div className="flex flex-col text-lg">
-              <label
-                htmlFor="email"
-                className="font-semibold text-gray-600 mb-1"
-              >
-                Email:
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className="p-3 border border-gray-300 rounded-lg"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-10">
-            <button
-              type="submit"
-              className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-            >
-              Save Changes
-            </button>
-
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      ) : (
-        <>
-          <h1 className="text-3xl sm:text-4xl font-extrabold mb-8 text-blue-700 border-b pb-4">
-            User Profile
-          </h1>
-
-          <div className="space-y-6">
-            <div className="flex flex-col md:flex-row text-lg">
-              <span className="font-semibold text-gray-600 w-full md:w-32 mb-1 md:mb-0">
-                Username:
-              </span>
-              <span className="text-gray-900 font-medium">{user.username}</span>
-            </div>
-
-            <div className="flex flex-col md:flex-row text-lg">
-              <span className="font-semibold text-gray-600 w-full md:w-32 mb-1 md:mb-0">
-                Email:
-              </span>
-              <span className="text-gray-900 font-medium">{user.email}</span>
-            </div>
-
-            <div className="flex flex-col md:flex-row text-lg">
-              <span className="font-semibold text-gray-600 w-full md:w-32 mb-1 md:mb-0">
-                Role:
-              </span>
-              <span className="text-gray-900 font-medium capitalize">
-                {user.role}
-              </span>
-            </div>
-          </div>
-
-          <div className="mt-10 flex flex-col sm:flex-row sm:items-center sm:flex-wrap gap-4">
-            <button
-              onClick={() => setIsEditing(true)}
-              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Edit Profile
-            </button>
-
-            {user.role === "admin" && (
-              <Link
-                to="/dashboard"
-                className="w-full sm:w-auto text-center bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-              >
-                Go to Admin Dashboard
-              </Link>
-            )}
-
-            <button
-              onClick={logout}
-              className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-            >
-              Logout
-            </button>
-          </div>
-        </>
-      )}
+    <div className="flex justify-center items-center min-h-screen p-4">
+      <Card className="w-full max-w-2xl">
+        {isEditing ? (
+          // --- โหมดแก้ไข (Edit Mode) ---
+          <form onSubmit={handleSave}>
+            <CardHeader>
+              <CardTitle className="text-3xl font-extrabold">Edit Profile</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {error && (
+                <p className="text-sm font-medium text-destructive">{error}</p>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={formData.username}
+                  onChange={(e) =>
+                    setFormData({ ...formData, username: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className="space-y-2 mb-6">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  required
+                />
+              </div>
+            </CardContent>
+            <CardFooter className="flex flex-col sm:flex-row gap-4">
+              <Button type="submit" className="w-full sm:w-auto">
+                Save Changes
+              </Button>
+              <Button type="button" variant="outline" onClick={handleCancel} className="w-full sm:w-auto">
+                Cancel
+              </Button>
+            </CardFooter>
+          </form>
+        ) : (
+          // --- โหมดแสดงผล (View Mode) ---
+          <>
+            <CardHeader>
+              <CardTitle className="text-3xl font-extrabold">User Profile</CardTitle>
+              <CardDescription>Your personal account details.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="text-lg space-y-4">
+                <div className="flex flex-col md:flex-row md:items-baseline">
+                  <span className="font-semibold text-muted-foreground w-full md:w-32 flex-shrink-0">
+                    Username:
+                  </span>
+                  <span className="font-medium break-words">{user.username}</span>
+                </div>
+                <div className="flex flex-col md:flex-row md:items-baseline">
+                  <span className="font-semibold text-muted-foreground w-full md:w-32 flex-shrink-0">
+                    Email:
+                  </span>
+                  <span className="font-medium break-words">{user.email}</span>
+                </div>
+                <div className="flex flex-col md:flex-row md:items-baseline">
+                  <span className="font-semibold text-muted-foreground w-full md:w-32 flex-shrink-0">
+                    Role:
+                  </span>
+                  <span className="font-medium capitalize">{user.role}</span>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter className="flex flex-col sm:flex-row sm:items-center sm:flex-wrap gap-4">
+              <Button onClick={() => setIsEditing(true)} className="w-full sm:w-auto">
+                Edit Profile
+              </Button>
+              {user.role === "admin" && (
+                <Button asChild variant="secondary" className="w-full sm:w-auto">
+                  <Link to="/dashboard">Go to Admin Dashboard</Link>
+                </Button>
+              )}
+              <Button onClick={logout} variant="destructive" className="w-full sm:w-auto sm:ml-auto">
+                Logout
+              </Button>
+            </CardFooter>
+          </>
+        )}
+      </Card>
     </div>
   );
 };

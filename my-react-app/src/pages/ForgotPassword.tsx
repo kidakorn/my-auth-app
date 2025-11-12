@@ -1,6 +1,12 @@
 import { useState, type FormEvent } from "react";
 import api from "../services/api";
 
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
+import { Link } from "react-router-dom";
+
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
@@ -28,51 +34,61 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen px-4 sm:px-6 lg:px-8">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col w-full max-w-md space-y-6 mt-8 sm:mt-12 p-6 sm:p-8 shadow-xl rounded-xl bg-white border border-gray-100"
-      >
-        <h2 className="text-3xl font-extrabold text-center text-gray-800">
-          Forgot Password
-        </h2>
-        {message && (
-          <div className="p-4 text-center bg-green-100 text-green-700 rounded-lg">
-            {message}
-          </div>
-        )}
+    <div className="flex justify-center items-center min-h-screen p-4">
+      <Card className="w-full max-w-md">
+        <form onSubmit={handleSubmit}>
+          <CardHeader>
+            <CardTitle className="text-3xl font-extrabold text-center mb-4">
+              Forgot Password
+            </CardTitle>
+          </CardHeader>
 
-        {error && (
-          <div className="p-4 text-center bg-red-100 text-red-700 rounded-lg">
-            {error}
-          </div>
-        )}
+          <CardContent className="space-y-6">
+            {message && (
+              <div className="p-4 text-center bg-green-100 text-green-700 rounded-lg">
+                {message}
+              </div>
+            )}
+            {error && (
+              <div className="p-4 text-center bg-red-100 text-red-700 rounded-lg">
+                {error}
+              </div>
+            )}
 
-        {!message && (
-          <>
-            <p className="text-center text-gray-600">
-              Enter your email address and we'll send you a link to reset your
-              password.
+            {!message && (
+              <div className="space-y-2 mb-6">
+                <Label htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
+            )}
+          </CardContent>
+
+          <CardFooter className="flex flex-col gap-6 mt-2">
+            {!message && (
+              <Button type="submit" disabled={loading} className="w-full">
+                {loading ? "Sending..." : "Send Reset Link"}
+              </Button>
+            )}
+
+            <p className="text-center text-sm text-muted-foreground">
+              Remembered your password?{" "}
+              <Link
+                to="/login"
+                className="font-medium text-primary hover:underline"
+              >
+                Back to Login
+              </Link>
             </p>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Your email address"
-              required
-              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-300 disabled:bg-gray-400"
-            >
-              {loading ? "Sending..." : "Send Reset Link"}
-            </button>
-          </>
-        )}
-      </form>
+          </CardFooter>
+        </form>
+      </Card>
     </div>
   );
 };

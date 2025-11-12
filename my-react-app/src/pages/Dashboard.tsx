@@ -3,6 +3,44 @@ import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import { Link } from "react-router-dom";
 
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../components/ui/alert-dialog";
+import { MoreHorizontal } from "lucide-react";
+
 interface UserListEntry {
   id: number;
   username: string;
@@ -20,6 +58,7 @@ const Dashboard = () => {
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newRole, setNewRole] = useState("user");
+  const [deletingUser, setDeletingUser] = useState<UserListEntry | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -107,146 +146,190 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="w-full max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto mt-8 sm:mt-16 p-6 sm:p-8 bg-white shadow-xl rounded-2xl">
-      <h1 className="text-3xl font-bold mb-4 text-blue-700">Admin Dashboard</h1>
-
+    <div className="w-full max-w-lg md:max-w-3xl lg:max-w-5xl mx-auto mt-8 sm:mt-16 p-6 sm:p-8">
+      {/* ปุ่ม Back to Profile */}
       <div className="mb-4">
-        <Link
-          to="/profile"
-          className="text-blue-600 hover:text-blue-800 transition duration-300 font-semibold text-sm"
-        >
-          &larr; Back to Profile
-        </Link>
+        <Button variant="link" asChild className="p-0 h-auto">
+          <Link to="/profile">&larr; Back to Profile</Link>
+        </Button>
       </div>
 
-      <div className="mt-6">
-        <button
-          onClick={() => setShowCreateForm(!showCreateForm)}
-          className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 mb-3 rounded-lg transition duration-300"
-        >
-          {showCreateForm ? "Cancel" : "+ Create New User!"}
-        </button>
-      </div>
-
-      {showCreateForm && (
-        <form
-          onSubmit={handleCreateUser}
-          className="flex flex-col space-x-4 p-6 mb-6 bg-gray-100 rounded-lg"
-        >
-          <h3 className="mb-3 text-xl font-semibold text-gray-700">
-            New User Details
-          </h3>
-
-          <input
-            type="text"
-            placeholder="Username"
-            value={newUsername}
-            onChange={(e) => setNewUsername(e.target.value)}
-            className="p-3 mb-3 border rounded-lg"
-            required
-          />
-
-          <input
-            type="email"
-            placeholder="Email"
-            value={newEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
-            className="p-3 mb-3 border rounded-lg"
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            className="p-3 mb-3 border rounded-lg"
-            required
-          />
-
-          <select
-            value={newRole}
-            onChange={(e) => setNewRole(e.target.value)}
-            className="p-3 mb-3 border rounded-lg bg-white"
+      {/* --- ส่วนฟอร์ม Create User (ใช้ Card) --- */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold">Admin Dashboard</CardTitle>
+          <CardDescription>Create and manage users.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            onClick={() => setShowCreateForm(!showCreateForm)}
+            variant={showCreateForm ? "secondary" : "default"}
           >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
+            {showCreateForm ? "Cancel" : "+ Create New User"}
+          </Button>
 
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
-          >
-            Submit
-          </button>
-        </form>
-      )}
+          {showCreateForm && (
+            <form
+              onSubmit={handleCreateUser}
+              className="flex flex-col space-y-4 mt-6 p-6 bg-muted rounded-lg"
+            >
+              <h3 className="text-xl font-semibold text-card-foreground">
+                New User Details
+              </h3>
+              {/* (Input Fields เดิม) */}
+              <div className="space-y-2">
+                <Label htmlFor="new-username">Username</Label>
+                <Input
+                  id="new-username"
+                  type="text"
+                  placeholder="Username"
+                  value={newUsername}
+                  onChange={(e) => setNewUsername(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="new-email">Email</Label>
+                <Input
+                  id="new-email"
+                  type="email"
+                  placeholder="Email"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="new-password">Password</Label>
+                <Input
+                  id="new-password"
+                  type="password"
+                  placeholder="Password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                />
+              </div>
+              {/* (Select Role) */}
+              <Button type="submit" className="pt-4">
+                Submit
+              </Button>
+            </form>
+          )}
+        </CardContent>
+      </Card>
 
-      <h2 className="text-2xl font-semibold mb-4 text-gray-700">
-        User Management
-      </h2>
+      {/* --- 3. ส่วนตาราง (ใช้ Card) --- */}
+      <Card>
+        <CardHeader>
+          <CardTitle>User Management</CardTitle>
+          {error && (
+            <p className="text-sm font-medium text-destructive">{error}</p>
+          )}
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <p>Loading user list...</p>
+          ) : (
+            <div className="overflow-x-auto rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="hidden sm:table-cell">ID</TableHead>
+                    <TableHead>Username</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Email
+                    </TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {users.map((u) => (
+                    <TableRow key={u.id}>
+                      <TableCell className="hidden sm:table-cell">
+                        {u.id}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {u.username}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {u.email}
+                      </TableCell>
+                      <TableCell className="capitalize">{u.role}</TableCell>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                ID
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Username
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Email
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Role
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {users.map((u) => (
-              <tr key={u.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">{u.id}</td>
+                      {/* --- 4. ปุ่ม Actions (DropdownMenu) --- */}
+                      <TableCell className="text-right">
+                        {/* ปิดปุ่มถ้าเป็น Admin คนปัจจุบัน */}
+                        {u.id === user?.id ? (
+                          <span className="text-xs text-muted-foreground">
+                            Current Admin
+                          </span>
+                        ) : (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={() => handleUpdateRole(u.id, u.role)}
+                              >
+                                {u.role === "user" ? "Make Admin" : "Make User"}
+                              </DropdownMenuItem>
+                              {/* เปิด Dialog ยืนยันการลบ */}
+                              <DropdownMenuItem
+                                onClick={() => setDeletingUser(u)}
+                                className="text-destructive"
+                              >
+                                Delete User
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  {u.username}
-                </td>
-
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  {u.email}
-                </td>
-
-                <td className="px-6 py-4 whitespace-nowrap text-sm capitalize">
-                  {u.role}
-                </td>
-
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                  <button
-                    onClick={() => handleUpdateRole(u.id, u.role)}
-                    className="text-blue-600 hover:text-blue-900 disabled:text-gray-300"
-                    // ปิดปุ่มถ้าเป็น Admin คนปัจจุบัน
-                    disabled={u.id === user?.id}
-                  >
-                    {u.role === "user" ? "Make Admin" : "Make User"}
-                  </button>
-                  <button
-                    onClick={() => handleDeleteUser(u.id)}
-                    className="text-red-600 hover:text-red-900 disabled:text-gray-300"
-                    // ปิดปุ่มถ้าเป็น Admin คนปัจจุบัน
-                    disabled={u.id === user?.id}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/* --- 5. Dialog ยืนยันการลบ --- */}
+      <AlertDialog
+        open={!!deletingUser}
+        onOpenChange={() => setDeletingUser(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete the user{" "}
+              <span className="font-medium">{deletingUser?.username}</span>.
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (deletingUser) {
+                  handleDeleteUser(deletingUser.id);
+                }
+              }}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
