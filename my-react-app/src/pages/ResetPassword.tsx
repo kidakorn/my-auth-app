@@ -13,12 +13,13 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import { toast } from "sonner";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const { token } = useParams();
@@ -29,12 +30,13 @@ const ResetPassword = () => {
 
     // 2. ตรวจสอบว่ารหัสผ่านตรงกัน
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+      toast.error("Passwords do not match.");
+      // setError("Passwords do not match.");
       return;
     }
 
     setLoading(true);
-    setError(null);
+    // setError(null);
     setMessage(null);
 
     try {
@@ -44,6 +46,11 @@ const ResetPassword = () => {
       // 4. แสดงข้อความสำเร็จ และเตรียมส่งกลับไปหน้า Login
       setMessage(res.data.message + " Redirecting to login in 3 seconds...");
 
+      // (Toast จะแสดงผลใน App.tsx ตอนเราเรียกใช้)
+      toast.success("Password Reset Successful", {
+        description: res.data.message,
+      });
+
       setTimeout(() => {
         navigate("/login");
       }, 3000); // 3 วินาที
@@ -51,7 +58,10 @@ const ResetPassword = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       // 5. แสดง Error (เช่น Token หมดอายุ หรือไม่ถูกต้อง)
-      setError(err.response?.data?.message || "An error occurred.");
+      // setError(err.response?.data?.message || "An error occurred.");
+      toast.error("Reset Failed", {
+        description: err.response?.data?.message || "An error occurred.",
+      });
       setLoading(false);
     }
   };
@@ -75,11 +85,11 @@ const ResetPassword = () => {
                 {message}
               </div>
             )}
-            {error && (
+            {/* {error && (
               <div className="p-4 text-center bg-red-100 text-red-700 rounded-lg">
                 {error}
               </div>
-            )}
+            )} */}
 
             {/* ถ้ายังไม่สำเร็จ (ไม่มี message) ให้แสดงฟอร์ม */}
             {!message && (

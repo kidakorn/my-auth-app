@@ -8,6 +8,7 @@ import AdminRoute from "./components/AdminRoute";
 import Dashboard from "./pages/Dashboard";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import { Toaster } from "./components/ui/sonner";
 
 // 1. สร้างฟังก์ชันคอมโพเนนต์ชื่อ App
 function App() {
@@ -36,6 +37,7 @@ function App() {
           <Route path="*" element={<h1>404 Not Found</h1>} />
         </Routes>
       </BrowserRouter>
+      <Toaster richColors position="top-right" />
     </AuthProvider>
   );
 }

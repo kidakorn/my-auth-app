@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
+import { toast } from "sonner";
 
 const Profile = () => {
   const { user, logout, updateProfile } = useAuth();
@@ -15,7 +16,7 @@ const Profile = () => {
     username: "",
     email: "",
   });
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
 
   // เมื่อ User (จาก Context) โหลดเสร็จ ให้ตั้งค่าเริ่มต้นให้ฟอร์ม
   useEffect(() => {
@@ -30,13 +31,21 @@ const Profile = () => {
   // ฟังก์ชันเมื่อกด "Save"
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
+    // setError(null);
     try {
       await updateProfile(formData.username, formData.email);
       setIsEditing(false);
+
+      toast.success("Profile Update", {
+        description: "Your profile has been successfully updated.",
+      });
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to update profile.");
+      toast.error("Update Failed", {
+        description: err.response?.data?.message || "Failed to update profile.",
+      });
+      // setError(err.response?.data?.message || "Failed to update profile.");
     }
   };
 
@@ -51,7 +60,7 @@ const Profile = () => {
         email: user.email,
       });
     }
-    setError(null);
+    // setError(null);
   };
 
   if (!user) {
@@ -70,9 +79,9 @@ const Profile = () => {
               <CardTitle className="text-3xl font-extrabold">Edit Profile</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {error && (
+              {/* {error && (
                 <p className="text-sm font-medium text-destructive">{error}</p>
-              )}
+              )} */}
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
                 <Input

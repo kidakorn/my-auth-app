@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -19,29 +20,40 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
   const { register } = useAuth();
   const navigare = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // setError(null);
 
     // ตรวจสอบรหัสผ่าน
     if (password !== confirmPassword) {
-      alert("Password do not match!");
+      // setError("Passwords do not match!");
+      toast.error("Passwords do not match!");
       return;
     }
 
     try {
       await register(username, email, password);
+
       navigare("/profile");
+
+      toast.success("Account Created", {
+        description: `Welcome, ${username}! You are now logged in.`,
+      });
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("Registration fiiled", error);
-      setError(
-        error.response?.data?.message ||
-          "Registration failed. Please try again."
-      );
+      console.error("Registration failed", error);
+      const errorMessage =
+        error.response?.data?.message || "Registration failed.";
+
+      //แสดง Toast Error (จาก Backend)
+      toast.error("Registration Failed", {
+        description: errorMessage,
+      });
     }
   };
 
@@ -107,9 +119,9 @@ const Register = () => {
               />
             </div>
 
-            {error && (
+            {/* {error && (
               <p className="text-sm font-medium text-destructive">{error}</p>
-            )}
+            )} */}
           </CardContent>
 
           <CardFooter className="flex flex-col gap-6">

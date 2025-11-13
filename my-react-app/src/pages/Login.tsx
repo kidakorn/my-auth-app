@@ -13,11 +13,12 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import { toast } from "sonner";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -26,9 +27,17 @@ const Login = () => {
     try {
       await login(username, password);
       navigate("/profile");
-    } catch (error) {
+      toast.success("Login Successful", {
+        description: `Welcome , ${username}!`,
+      });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error("Login failed", error);
-      setError("Invalid username or password.");
+      // setError("Invalid username or password.");
+      toast.error("Login Failed", {
+        description:
+          error.response?.data?.message || "Invalid username or password.",
+      });
     }
   };
 
@@ -78,9 +87,9 @@ const Login = () => {
               </div>
             </div>
 
-            {error && (
+            {/* {error && (
               <p className="text-sm font-medium text-destructive">{error}</p>
-            )}
+            )} */}
           </CardContent>
 
           <CardFooter className="flex flex-col gap-6">
